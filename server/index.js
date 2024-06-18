@@ -8,6 +8,7 @@ const { connectionToDB } = require('./config/db.config');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { notFound, errorHandler } = require('./middlewares/errorHandler.middleware');
+const taskRouter = require('./routes/task.routes');
 const PORT = process.env.PORT || 5000;
 
 
@@ -32,7 +33,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRouter);
-// app.use('/api/tasks', taskRouter);
+app.use('/api/tasks', taskRouter);
 
 // Error handling middlewares
 app.use(notFound);
