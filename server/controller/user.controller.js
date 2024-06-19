@@ -1,10 +1,102 @@
-const asyncHandler = require("express-async-handler");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { User } = require("../models/user.schema");
-const { validationResult } = require('express-validator');
-const Blacklist = require("../models/blacklist.schema");
-require('dotenv').config();
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         username:
+ *           type: string
+ *         email:
+ *           type: string
+ *         pic:
+ *           type: string
+ *
+ * /api/users/register:
+ *   post:
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               pic:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: User registered successfully
+ *       '400':
+ *         description: Validation error or user already exists
+ *       '500':
+ *         description: Server error
+ *
+ * /api/users/login:
+ *   post:
+ *     summary: Authenticate user and get token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Authentication successful, returns token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       '400':
+ *         description: Invalid credentials or missing fields
+ *       '500':
+ *         description: Server error
+ *
+ * /api/users/logout:
+ *   post:
+ *     summary: Log out user and invalidate token
+ *     responses:
+ *       '200':
+ *         description: Logged out successfully
+ *       '400':
+ *         description: No token provided or error logging out
+ *       '500':
+ *         description: Server error
+ */
+import asyncHandler from 'express-async-handler';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { User } from '../models/user.schema.js';
+import { validationResult } from 'express-validator';
+import Blacklist from '../models/blacklist.schema.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 const registerUser = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
@@ -103,7 +195,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
+export{
   registerUser,
   authUser,
   logoutUser

@@ -1,16 +1,21 @@
-const express = require('express');
-const app = express();
-const colors = require('colors');
-require("dotenv").config();
-const cors = require("cors");
-const { userRouter } = require('./routes/user.routes');
-const { connectionToDB } = require('./config/db.config');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const { notFound, errorHandler } = require('./middlewares/errorHandler.middleware');
-const taskRouter = require('./routes/task.routes');
-const PORT = process.env.PORT || 5000;
+import express from 'express';
+import colors from 'colors';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
+import { userRouter } from './routes/user.routes.js';
+import { connectionToDB } from './config/db.config.js';
+import { notFound, errorHandler } from './middlewares/errorHandler.middleware.js';
+import taskRouter from './routes/task.routes.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -18,18 +23,36 @@ app.use(cors({
   credentials: true
 }));
 
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'TASKOPIA-FLUIDAI',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}/`
+      }
+    ]
+  },
+  apis: ['./routes/*.js'], 
+};
+
+const openapiSpecification = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(session({
   secret: process.env.SESSION_SECRET || 'yourSecretKey',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true } 
+  cookie: { secure: false, httpOnly: true }
 }));
 
 app.get('/', (req, res) => {
-  res.send("server up!")
+  res.send("server up!");
 });
 
 app.use('/api/users', userRouter);
@@ -39,11 +62,13 @@ app.use('/api/tasks', taskRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   try {
     await connectionToDB();
-    console.log(`server running on port http://localhost:${PORT}`.yellow.bold);
+    console.log(`Server running on port http://localhost:${PORT}`.yellow.bold);
   } catch (error) {
     console.log(error);
   }
 });
+
+export {app };
