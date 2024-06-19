@@ -87,6 +87,14 @@ npm run server
 
 ![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/5ef72a66-7301-4632-aa5f-92a6a9828d70)
 
+![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/3f664488-631e-4d82-ae6c-e54ed328281e)
+
+![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/dfc19175-e89c-4cae-92f0-4ddcdf7826d8)
+
+![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/cc408edd-1e24-4b28-8662-8a7bbd3d9f07)
+
+
+
 
 
 
