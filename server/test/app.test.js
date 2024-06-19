@@ -242,11 +242,11 @@ describe('Task API', () => {
   describe('GET /api/tasks/:id', () => {
     it('should get a single task by id', async () => {
       const res = await request(app)
-        .get(`/api/tasks/${taskId}`) // Use the stored taskId here
+        .get(`/api/tasks/${taskId}`) 
         .set('Authorization', `Bearer ${authToken}`);
 
       expect(res.status).toBe(200);
-      expect(res.body._id).toBe(taskId); // Ensure the retrieved task ID matches
+      expect(res.body._id).toBe(taskId); 
     });
 
     it('should return 404 if task is not found', async () => {

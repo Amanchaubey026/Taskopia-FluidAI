@@ -18,8 +18,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  methods: ['GET', 'POST'],
+  origin: process.env.CLIENT_ORIGIN || '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
@@ -32,7 +32,7 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}/`
+        url:  `http://localhost:10000` || process.env.SERVER_URL 
       }
     ]
   },
@@ -48,7 +48,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'yourSecretKey',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true }
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production', 
+    httpOnly: true 
+  }
 }));
 
 app.get('/', (req, res) => {
@@ -71,4 +74,4 @@ const server = app.listen(PORT, async () => {
   }
 });
 
-export {app };
+export { app };
