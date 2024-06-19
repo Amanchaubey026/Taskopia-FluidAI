@@ -83,6 +83,10 @@ npm run server
 ## Snapshot of Website
 
 
+![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/84296536-1400-4961-b4d1-83d39c8eba39)
+
+![image](https://github.com/Amanchaubey026/Taskopia-FluidAI/assets/98681520/5ef72a66-7301-4632-aa5f-92a6a9828d70)
+
 
 
 
