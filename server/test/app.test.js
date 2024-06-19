@@ -27,16 +27,12 @@ describe('User API', () => {
 
   describe('POST /api/users/register', () => {
     it('should register a new user', async () => {
-      const hashedPassword = await bcrypt.hash('password123', 10);
-      const userId = new mongoose.Types.ObjectId();
-
       const res = await request(app)
         .post('/api/users/register')
         .send({
-          _id: userId,
           username: 'testuser',
           email: 'testuser@example.com',
-          password: hashedPassword,
+          password: 'password123',
         });
 
       expect(res.status).toBe(201);
@@ -58,7 +54,6 @@ describe('User API', () => {
       const res = await request(app)
         .post('/api/users/register')
         .send({
-          _id: new mongoose.Types.ObjectId(),
           username: 'testuser2',
           email: 'testuser@example.com',
           password: 'password123',
@@ -202,7 +197,6 @@ describe('Task API', () => {
         dueDate: '2024-06-25T12:00:00.000Z',
         priority: 'High',
         status: 'Pending',
-        user: userId.toString(), // Convert ObjectId to string for comparison
       };
 
       const res = await request(app)
@@ -211,7 +205,7 @@ describe('Task API', () => {
         .send(taskData);
 
       expect(res.status).toBe(201);
-      expect(res.body).toMatchObject(taskData);
+      expect(res.body).toMatchObject({ ...taskData, user: userId.toString() });
 
       // Store the created task ID
       taskId = res.body._id;
