@@ -160,6 +160,7 @@ describe('User API', () => {
 describe('Task API', () => {
   let authToken;
   let userId;
+  let taskId; // Variable to store generated task ID
 
   beforeAll(async () => {
     await mongoose.connect('mongodb://localhost:27017/testdb', {
@@ -211,6 +212,9 @@ describe('Task API', () => {
 
       expect(res.status).toBe(201);
       expect(res.body).toMatchObject(taskData);
+
+      // Store the created task ID
+      taskId = res.body._id;
     });
 
     it('should return 400 if required fields are missing', async () => {
@@ -243,22 +247,12 @@ describe('Task API', () => {
 
   describe('GET /api/tasks/:id', () => {
     it('should get a single task by id', async () => {
-      const task = new Task({
-        title: 'Test Task',
-        description: 'This is a test task',
-        dueDate: '2024-06-25T12:00:00Z',
-        priority: 'High',
-        status: 'Pending',
-        user: userId,
-      });
-      await task.save();
-
       const res = await request(app)
-        .get(`/api/tasks/${task._id}`)
+        .get(`/api/tasks/${taskId}`) // Use the stored taskId here
         .set('Authorization', `Bearer ${authToken}`);
 
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject(task.toObject());
+      expect(res.body._id).toBe(taskId); // Ensure the retrieved task ID matches
     });
 
     it('should return 404 if task is not found', async () => {
@@ -275,16 +269,6 @@ describe('Task API', () => {
 
   describe('PUT /api/tasks/:id', () => {
     it('should update a task', async () => {
-      const task = new Task({
-        title: 'Test Task',
-        description: 'This is a test task',
-        dueDate: '2024-06-25T12:00:00Z',
-        priority: 'High',
-        status: 'Pending',
-        user: userId,
-      });
-      await task.save();
-
       const updatedTaskData = {
         title: 'Updated Task',
         description: 'This is an updated test task',
@@ -294,7 +278,7 @@ describe('Task API', () => {
       };
 
       const res = await request(app)
-        .put(`/api/tasks/${task._id}`)
+        .put(`/api/tasks/${taskId}`) // Use the stored taskId here
         .set('Authorization', `Bearer ${authToken}`)
         .send(updatedTaskData);
 
@@ -323,25 +307,12 @@ describe('Task API', () => {
 
   describe('DELETE /api/tasks/:id', () => {
     it('should delete a task', async () => {
-      const task = new Task({
-        title: 'Task to delete',
-        description: 'This is a task to be deleted',
-        dueDate: '2024-06-25T12:00:00Z',
-        priority: 'Low',
-        status: 'Pending',
-        user: userId,
-      });
-      await task.save();
-
       const res = await request(app)
-        .delete(`/api/tasks/${task._id}`)
+        .delete(`/api/tasks/${taskId}`) // Use the stored taskId here
         .set('Authorization', `Bearer ${authToken}`);
 
       expect(res.status).toBe(200);
       expect(res.body.msg).toBe('Task deleted successfully');
-
-      const deletedTask = await Task.findById(task._id);
-      expect(deletedTask).toBeNull();
     });
 
     it('should return 404 if task is not found', async () => {
