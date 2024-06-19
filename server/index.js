@@ -32,7 +32,7 @@ const options = {
     },
     servers: [
       {
-        url:  `http://localhost:10000` || process.env.SERVER_URL 
+        url:  `http://localhost:${PORT} || process.env.SERVER_URL ` 
       }
     ]
   },
